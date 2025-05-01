@@ -1,0 +1,47 @@
+# Android Studio project files
+.gradle/
+.idea/
+*.iml
+*.keystore
+*.jks
+
+# Build files
+build/
+app/build/
+captures/
+output.json
+
+# Generated files
+*.apk
+*.aar
+*.ap_
+*.aab
+
+# Log files
+*.log
+
+# Android Studio Navigation editor temp files
+.navigation/
+
+# External native build folder
+.externalNativeBuild/
+.cxx/
+
+# IntelliJ IDEA files
+*.iws
+*.ipr
+*.swp
+
+# Gradle cache
+.gradle
+gradle-app.setting
+
+# Fastlane files
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+fastlane/readme.md
+
+# NDK
+obj/
