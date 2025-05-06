@@ -8,13 +8,14 @@
 
     <!-- 主内容容器 - 垂直LinearLayout居中显示 -->
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center_horizontal"
-        android:layout_centerInParent="true">
+        android:layout_centerInParent="true"
+        android:padding="16dp">
 
-        <!-- 计时器显示 -->
+        <!-- 优化后的计时器显示 -->
         <TextView
             android:id="@+id/text_view_stopwatch"
             android:layout_width="wrap_content"
@@ -23,7 +24,13 @@
             android:textColor="#000000"
             android:textStyle="bold"
             android:text="00:00:000"
-            android:layout_marginBottom="30dp"/>
+            android:layout_marginBottom="30dp"
+            android:maxLines="1"
+            android:ellipsize="none"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="12sp"
+            android:autoSizeMaxTextSize="80sp"
+            android:autoSizeStepGranularity="2sp"/>
 
         <!-- 按钮容器 - 水平排列 -->
         <LinearLayout
