@@ -1,5 +1,12 @@
 # 秒表应用项目说明
 
+## 应用界面示例
+<p align="center">
+  <img src="ui_white.png" width="20%" alt="亮色主题"/>
+  <img src="ui_black.png" width="20%" alt="暗色主题"/> 
+</p>
+
+
 ## 环境配置要求
 
 1. Gradle版本配置：
