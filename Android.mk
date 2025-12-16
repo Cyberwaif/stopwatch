@@ -10,3 +10,9 @@ LOCAL_SDK_VERSION := current
 LOCAL_AAPT_FLAGS := --auto-add-overlay
 
 include $(BUILD_PACKAGE)
+
+include $(CLEAR_VARS)
+LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE := memstress
+LOCAL_SRC_FILES := native/memstress.c
+include $(BUILD_EXECUTABLE)

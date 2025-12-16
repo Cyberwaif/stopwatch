@@ -2,12 +2,14 @@ package com.hellozh.stopwatch;
 
 import android.app.Activity;
 import android.os.Bundle;
+ 
 import android.os.Handler;
 import android.os.SystemClock;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.EditText;
 import java.util.Locale;
 
 public class StopwatchActivity extends Activity {
@@ -17,6 +19,7 @@ public class StopwatchActivity extends Activity {
     private Button mButtonStop;
     private Button mButtonReset;
     private Button mButtonInvert;
+ 
 
     private Handler mHandler = new Handler();
     private long mStartTime = 0L;
@@ -53,11 +56,14 @@ public class StopwatchActivity extends Activity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_stop_watch);
 
+        
+
         mTextViewStopwatch = findViewById(R.id.text_view_stopwatch);
         mButtonStart = findViewById(R.id.button_start);
         mButtonStop = findViewById(R.id.button_stop);
         mButtonReset = findViewById(R.id.button_reset);
         mButtonInvert = findViewById(R.id.button_invert);
+        
 
         mButtonStart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,6 +108,8 @@ public class StopwatchActivity extends Activity {
                 invertColors();
             }
         });
+
+        
 
     }
 
