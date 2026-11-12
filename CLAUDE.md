@@ -45,3 +45,14 @@ CMake 的 `memstress` 目标把输出目录直接设为 `app/src/main/jniLibs/${
 
 - 使用原生 `android.app.Activity` 而非 AppCompat/Fragment，不要引入 AndroidX 组件（`gradle.properties` 中的 `android.enableJetifier`/`useAndroidX` 仅为兼容预留，当前无依赖）。
 - 布局文件中的 `tools:context=".StopWatchActivity"` 大小写与真实类名 `StopwatchActivity` 不一致（仅影响 IDE 预览）。
+
+## 提交前检查（仓库已公开，务必遵守）
+
+本仓库是 **public** 仓库。每次 `git commit` / `git push` / 发布 Release 之前：
+
+- **个人/公司信息**：不得出现真实姓名、工作邮箱、内网地址、本机绝对路径、账号、密码、token。具体的敏感特征词只放在本机全局配置里，**不要写进本仓库任何文件**；仓库内只做通用自查：`git grep -n -E "/Users/|/home/|password|token|secret"`。
+- **作者身份**：提交前用 `git config user.name` / `user.email` 确认是个人账号身份，不是工作身份。
+- **`local.properties`、`.DS_Store`**：已在 `.gitignore`，不得 `git add -f`。
+- **`memstress` 二进制**：Gradle/CMake 构建会覆盖 `app/src/main/jniLibs/arm64-v8a/memstress` 为**带调试信息**的版本，其中嵌有本机构建路径。提交前必须先用 NDK 的 `llvm-strip --strip-all` 去符号，再用 `strings <文件> | grep -E "/Users|/home"` 确认为空。若无需改 `native/memstress.c`，不要提交该二进制的变更。
+- **第三方素材**：`lenna_head.png` 来自 Lenna 标准测试图，仅用于人脸检测测试，勿作他用。
+- **Release APK**：`release/` 与 `*.apk` 不入库；用 debug keystore 签名的包仅供测试，发布前确认包内不含本机路径。

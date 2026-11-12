@@ -45,3 +45,7 @@ fastlane/readme.md
 
 # NDK
 obj/
+
+# Local / OS files (contain local paths)
+local.properties
+.DS_Store
