@@ -6,6 +6,12 @@
     android:layout_height="match_parent"
     tools:context=".StopWatchActivity">
 
+    <!-- 跑动小人层（位于控件下方） -->
+    <com.hellozh.stopwatch.RunnersView
+        android:id="@+id/runners_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
     <!-- 主内容容器 - 垂直LinearLayout居中显示 -->
     <LinearLayout
         android:layout_width="match_parent"
@@ -73,11 +79,13 @@
                 android:text="Invert Colors"
                 android:layout_marginEnd="20dp"/>
 
-            <Button
-                android:id="@+id/button_background"
+            <Switch
+                android:id="@+id/switch_runners"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Motion: On"/>
+                android:layout_gravity="center_vertical"
+                android:checked="true"
+                android:text="Runners  "/>
         </LinearLayout>
 
 

@@ -35,10 +35,10 @@ CMake 的 `memstress` 目标把输出目录直接设为 `app/src/main/jniLibs/${
 ## 代码结构
 
 - `app/src/main/java/com/hellozh/stopwatch/StopwatchActivity.java` — 全部业务逻辑。用 `SystemClock.uptimeMillis()` + `Handler.postDelayed(mRunnable, 10)` 每 10ms 刷新，`mTimeSwapBuff` 累积已计时的毫秒数以支撑 Start/Stop/Resume。时间格式 `%02d:%02d.%03d`（分:秒.毫秒），分钟不截断，可超过 100 分钟。`onPause` 停掉刷新循环与背景动画，`onResume` 重建（计时基数不变，回到前台不丢时间）。
-- `app/src/main/java/com/hellozh/stopwatch/ToneBackgroundDrawable.java` — **色块跳变**背景：整屏切成硬边方块（横向 `COLUMNS = 3`，纵向按屏幕比例自动算），每 `STEP_MS = 100` ms 换一次色，每 5 步整屏全换，中间没有渐变、没有过渡。用 `Handler.postDelayed` 驱动而非 `ValueAnimator`。**对比度约束**（关键）：深色主题方块全部是"鲜艳但压暗"的色（最深白字 ≥8.7:1），浅色主题是高饱和明快色（最暗黑字 ≥10.2:1）；新增颜色前先算对比度，不要突破。`start()/stop()` 由生命周期驱动，`setMotionEnabled()` 由 Motion 按钮驱动，两者都满足才播放。
+- `app/src/main/java/com/hellozh/stopwatch/RunnersView.java` — 全屏"跑动小人"层（用于在另一台相机前测试人脸检测）：4 个火柴人身体 + Lenna 头像（`res/drawable-nodpi/lenna_head.png`，256x256，正面、不旋转、不形变），撞墙反弹，`postOnAnimation` 驱动。头部大小取宽 1/4 与高 1/5 的较小值以利于检测。`start()/stop()` 由生命周期驱动，`setRunning()` 由 Runners 开关驱动，两者都满足才播放；关闭时隐藏，背景为纯黑/纯白。原色块跳变背景 `ToneBackgroundDrawable` 已下线（git 历史可查）。
 - `app/src/main/res/layout/activity_stop_watch.xml` — 相对布局，底部有 "powered by Camera HAL" 标语；计时器 TextView 使用 autoSizeText。
-- 主题切换：`applyTheme()` 以硬编码 ARGB 颜色设置文字/按钮颜色，并同步 `ToneBackgroundDrawable.setDark()`。字段 `mIsDarkTheme` 初始为 `false`（浅色）。无 `styles.xml`、无夜间模式资源；布局里控件默认色不参与主题，改 UI 时颜色统一写在 `applyTheme()` 里。新增按钮记得在这里补颜色，否则深浅切换时会漏掉。
-- 动态背景开关：`Motion: On/Off` 按钮与 `Invert Colors` 并排放在同一行（`LinearLayout` horizontal）。`setMotionEnabled()` 关闭时停掉 Handler 循环、画面定格在当前一帧色块；`start()`/`stop()`（生命周期）与 `setMotionEnabled()`（用户开关）互不干扰，两者都满足才真正播放。
+- 主题切换：`applyTheme()` 以硬编码 ARGB 颜色设置文字/按钮颜色，并同步 `RunnersView.setDark()` 并按主题设置纯黑/纯白背景；计时数字带同背景色的 `setShadowLayer` 光晕，避免被小人干扰识别。字段 `mIsDarkTheme` 初始为 `false`（浅色）。无 `styles.xml`、无夜间模式资源；布局里控件默认色不参与主题，改 UI 时颜色统一写在 `applyTheme()` 里。新增按钮记得在这里补颜色，否则深浅切换时会漏掉。
+- 开关：`Runners` 是原生 `android.widget.Switch`（与 Invert Colors 并排），控制 RunnersView 是否显示/运行。
 - 全屏：`enterFullscreen()` 在 API 30+ 用 `WindowInsetsController`，旧版本用 `SYSTEM_UI_FLAG_IMMERSIVE_STICKY`；`onWindowFocusChanged` 里重新应用，以在用户划出系统栏后自动恢复。
 
 ## 注意

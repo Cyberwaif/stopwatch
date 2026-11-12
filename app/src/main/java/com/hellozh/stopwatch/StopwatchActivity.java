@@ -12,6 +12,8 @@ import android.view.WindowInsets;
 import android.view.WindowInsetsController;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
 import java.util.Locale;
 
@@ -22,7 +24,8 @@ public class StopwatchActivity extends Activity {
     private Button mButtonStop;
     private Button mButtonReset;
     private Button mButtonInvert;
-    private Button mButtonBackground;
+    private Switch mSwitchRunners;
+    private RunnersView mRunners;
 
     private Handler mHandler = new Handler();
     private long mStartTime = 0L;
@@ -33,7 +36,6 @@ public class StopwatchActivity extends Activity {
     private boolean mIsRunning = false;
     private boolean mIsDarkTheme = false;
 
-    private ToneBackgroundDrawable mBackground;
 
     private String formatElapsed(long millis) {
         long totalSecs = millis / 1000;
@@ -69,14 +71,13 @@ public class StopwatchActivity extends Activity {
         // 提前调用会抛 NullPointerException
         enterFullscreen();
 
-        setupBackground();
-
         mTextViewStopwatch = findViewById(R.id.text_view_stopwatch);
         mButtonStart = findViewById(R.id.button_start);
         mButtonStop = findViewById(R.id.button_stop);
         mButtonReset = findViewById(R.id.button_reset);
         mButtonInvert = findViewById(R.id.button_invert);
-        mButtonBackground = findViewById(R.id.button_background);
+        mSwitchRunners = findViewById(R.id.switch_runners);
+        mRunners = findViewById(R.id.runners_view);
 
 
         mButtonStart.setOnClickListener(new View.OnClickListener() {
@@ -124,28 +125,12 @@ public class StopwatchActivity extends Activity {
             }
         });
 
-        mButtonBackground.setOnClickListener(new View.OnClickListener() {
+        mSwitchRunners.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View view) {
-                boolean enable = !mBackground.isMotionEnabled();
-                mBackground.setMotionEnabled(enable);
-                updateBackgroundButtonText();
+            public void onCheckedChanged(CompoundButton b, boolean checked) {
+                mRunners.setRunning(checked);
             }
         });
-        updateBackgroundButtonText();
-
-    }
-
-    private void updateBackgroundButtonText() {
-        mButtonBackground.setText(mBackground.isMotionEnabled() ? "Motion: On" : "Motion: Off");
-    }
-
-    private void setupBackground() {
-        mBackground = new ToneBackgroundDrawable();
-        View content = findViewById(android.R.id.content);
-        content.setBackground(mBackground);
-        mBackground.setDark(mIsDarkTheme);
-        mBackground.start();
     }
 
     private void enterFullscreen() {
@@ -184,28 +169,31 @@ public class StopwatchActivity extends Activity {
     }
 
     private void applyTheme() {
-        mBackground.setDark(mIsDarkTheme);
+        findViewById(android.R.id.content).setBackgroundColor(mIsDarkTheme ? 0xFF000000 : 0xFFFFFFFF);
+        mRunners.setDark(mIsDarkTheme);
 
         int textColor = mIsDarkTheme ? 0xFFFFFFFF : 0xFF000000;
         int buttonBackground = mIsDarkTheme ? 0xFF222222 : 0xFFEEEEEE;
 
         mTextViewStopwatch.setTextColor(textColor);
+        // 数字外加反色光晕（与背景同色），避免被小人遮挡/干扰；多次叠加使光晕更实
+        int haloColor = mIsDarkTheme ? 0xFF000000 : 0xFFFFFFFF;
+        mTextViewStopwatch.setShadowLayer(24f, 0f, 0f, haloColor);
         mButtonStart.setBackgroundColor(buttonBackground);
         mButtonStop.setBackgroundColor(buttonBackground);
         mButtonReset.setBackgroundColor(buttonBackground);
         mButtonInvert.setBackgroundColor(buttonBackground);
-        mButtonBackground.setBackgroundColor(buttonBackground);
         mButtonStart.setTextColor(textColor);
         mButtonStop.setTextColor(textColor);
         mButtonReset.setTextColor(textColor);
         mButtonInvert.setTextColor(textColor);
-        mButtonBackground.setTextColor(textColor);
+        mSwitchRunners.setTextColor(textColor);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (mBackground != null) mBackground.start();
+        if (mRunners != null) mRunners.start();
         // 计时基于 uptimeMillis，后台期间的时间不会丢失；恢复时重建刷新循环即可
         if (mIsRunning) {
             mHandler.removeCallbacks(mRunnable);
@@ -218,6 +206,6 @@ public class StopwatchActivity extends Activity {
         super.onPause();
         // 后台时停止 10ms 刷新，避免无谓的 CPU 占用
         mHandler.removeCallbacks(mRunnable);
-        if (mBackground != null) mBackground.stop();
+        if (mRunners != null) mRunners.stop();
     }
 }
