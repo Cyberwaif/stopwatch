@@ -23,7 +23,7 @@
             android:textSize="80sp"
             android:textColor="#000000"
             android:textStyle="bold"
-            android:text="00:00:000"
+            android:text="00:00.000"
             android:layout_marginBottom="30dp"
             android:maxLines="1"
             android:ellipsize="none"
@@ -60,14 +60,27 @@
                 android:text="Reset"/>
         </LinearLayout>
 
-        <!-- 反色按钮 -->
-        <Button
-            android:id="@+id/button_invert"
+        <!-- 反色与动态背景开关 - 并排 -->
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Invert Colors"/>
+            android:orientation="horizontal">
 
-        
+            <Button
+                android:id="@+id/button_invert"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Invert Colors"
+                android:layout_marginEnd="20dp"/>
+
+            <Button
+                android:id="@+id/button_background"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Motion: On"/>
+        </LinearLayout>
+
+
     </LinearLayout>
 
     <!-- 底部文字 -->
